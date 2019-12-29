@@ -7,14 +7,17 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node_modules/.bin/jasmine-ts --config=jasmine.json",
+    "coverage": "nyc -r text -e .ts -x \"spec/*.spec.ts\" npm run test"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/jasmine": "^3.5.0",
+    "@types/node": "^13.1.1",
     "jasmine": "^3.5.0",
     "jasmine-ts": "^0.3.0",
+    "nyc": "^15.0.0",
     "ts-node": "^8.5.4",
     "typescript": "^3.7.4"
   }
