@@ -1,12 +1,28 @@
+import { School } from "../src/school";
+
 describe("School", function() {
-  beforeEach(function() {});
+  let school: School;
+  let schoolMock = {
+    name: "The Computer Institute"
+  };
 
-  it("should create a new school", function() {});
+  beforeEach(function() {
+    school = new School(schoolMock.name);
+  });
 
-  it("should return school's profile", function() {});
+  it("should create a new school", function() {
+    expect(school).toBeInstanceOf(School);
+  });
+
+  it("should return school's profile", function() {
+    expect(school.profile).toEqual(schoolMock);
+  });
 
   describe("Student", function() {
-    it("should add teacher to school", function() {});
+    it("should add teacher to school", function() {
+      // let teacher = 1;
+      // school.addTeacher(teacher);
+    });
 
     it("should throw an exception if teacher to be added already exist in school", function() {});
 
