@@ -59,7 +59,7 @@ export class Student extends Person {
 
     if (quiz) {
       const questions = quiz.questions;
-      if (questions.length > 0) {
+      if (questions && questions.length > 0) {
         let unsolvedIndices: number[] = [];
         questions.forEach(({ submission }, index) => {
           if (!submission || submission.length == 0) {

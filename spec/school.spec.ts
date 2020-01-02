@@ -1,7 +1,10 @@
+import sinon from "sinon";
 import { School } from "../src/school";
+import { Student } from "../src/student";
+import { Teacher } from "../src/teacher";
 
 describe("School", function() {
-  let school: School;
+  let school;
   let schoolMock = {
     name: "The Computer Institute"
   };
@@ -18,30 +21,93 @@ describe("School", function() {
     expect(school.profile).toEqual(schoolMock);
   });
 
-  describe("Student", function() {
-    it("should add teacher to school", function() {
-      // let teacher = 1;
-      // school.addTeacher(teacher);
+  describe("#Teacher", function() {
+    let teacherStub;
+
+    beforeEach(function() {
+      teacherStub = sinon.stub(
+        new Teacher("Ayomide Bakare", 43, "bakkareayomideo@gmail.com")
+      );
     });
 
-    it("should throw an exception if teacher to be added already exist in school", function() {});
+    it("should add teacher to school", function() {
+      expect(school.addTeacher(teacherStub)).toEqual(
+        "Teacher employed in this school"
+      );
+    });
 
-    it("should get teacher in school", function() {});
+    it("should throw an exception if teacher to be added already exist in school", function() {
+      expect(function() {
+        school.addTeacher(teacherStub);
+        school.addTeacher(teacherStub);
+      }).toThrowError("Teacher already work here");
+    });
 
-    it("should remove teacher from school", function() {});
+    it("should get teacher in school", function() {
+      school.addTeacher(teacherStub);
 
-    it("should throw an exception if teacher to me removed does not exist in school", function() {});
+      expect(school.getTeacherByEmail("bakkareayomideo@gmail.com")).toEqual(
+        teacherStub
+      );
+    });
+
+    it("should remove teacher from school", function() {
+      school.addTeacher(teacherStub);
+
+      expect(school.removeTeacher("bakkareayomideo@gmail.com")).toEqual(
+        "Teacher sacked from this school"
+      );
+    });
+
+    it("should throw an exception if teacher to me removed does not exist in school", function() {
+      expect(function() {
+        school.removeTeacher("email");
+      }).toThrowError("Teacher does not teach in this school");
+    });
   });
 
-  describe("Student", function() {
-    it("should add student to school", function() {});
+  describe("#Student", function() {
+    let studentStub;
 
-    it("should throw an exception if student to be added already exist in school", function() {});
+    beforeEach(function() {
+      studentStub = sinon.stub(
+        new Student("Ayomide Bakare", 24, "bakkareayomideo@gmail.com")
+      );
+    });
 
-    it("should get student in school", function() {});
+    it("should add student to school", function() {
+      expect(school.addStudent(studentStub)).toEqual(
+        "Student enrolled in school"
+      );
+    });
 
-    it("should remove student from school", function() {});
+    it("should throw an exception if student to be added already exist in school", function() {
+      expect(function() {
+        school.addStudent(studentStub);
+        school.addStudent(studentStub);
+      }).toThrowError("Student already in this school");
+    });
 
-    it("should throw an exception if student to me removed does not exist in school", function() {});
+    it("should get student in school", function() {
+      school.addStudent(studentStub);
+
+      expect(school.getStudentByEmail("bakkareayomideo@gmail.com")).toEqual(
+        studentStub
+      );
+    });
+
+    it("should remove student from school", function() {
+      school.addStudent(studentStub);
+
+      expect(school.removeStudent("bakkareayomideo@gmail.com")).toEqual(
+        "Student expelled from school"
+      );
+    });
+
+    it("should throw an exception if student to me removed does not exist in school", function() {
+      expect(function() {
+        school.removeStudent("bakkareayomideo@gmail.com");
+      }).toThrowError("Student does not exist in this school");
+    });
   });
 });

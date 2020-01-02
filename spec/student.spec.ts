@@ -146,6 +146,14 @@ describe("Student", function() {
       }).toThrowError("You've completed this quiz");
     });
 
+    it("show throw an exception if there are no questions in quiz", function() {
+      student.addQuizzes([{ id: "2", courseCode: "MDB-101", questions: [] }]);
+
+      expect(function() {
+        student.solveQuiz("MDB-101", "2");
+      }).toThrowError("No questions available in this quiz");
+    });
+
     it("show throw an exception if quiz does not exist", function() {
       expect(function() {
         student.solveQuiz("MTH-332", "3");
