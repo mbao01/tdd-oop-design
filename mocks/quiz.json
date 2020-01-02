@@ -10,10 +10,6 @@
         },
         {
             "question": "Can you use a shovel to eat?",
-            "choices": ["No", "Maybe", "Yes"]
-        },
-        {
-            "question": "Nigeria is a great nation",
             "choices": [
                 "Strongly Agree",
                 "Agree",

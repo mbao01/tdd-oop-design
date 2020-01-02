@@ -1,4 +1,3 @@
-import sinon from "sinon";
 import { Person } from "../src/person";
 
 describe("Person", function() {

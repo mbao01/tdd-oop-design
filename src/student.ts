@@ -1,6 +1,6 @@
 import { Person } from "./person";
 import { Quiz, Question } from "./interfaces";
-import { printQuestion, makeSubmission } from "./utils";
+import { printQuestion, makeSubmission, nextQuestion } from "./utils";
 import { Course } from "./course";
 
 /**
@@ -14,6 +14,7 @@ export class Student extends Person {
     super(name, age, email);
 
     this._quizzes = [];
+    this._coursesCodes = [];
   }
 
   get coursesCodes() {
@@ -50,7 +51,7 @@ export class Student extends Person {
     return quiz;
   }
 
-  solveQuiz(courseCode: string, quizId: string) {
+  solveQuiz(courseCode: string, quizId: string): { next: any } {
     const quiz = this._quizzes.find(
       ({ courseCode: _courseCode, id }) =>
         _courseCode == courseCode && id == quizId
@@ -66,44 +67,41 @@ export class Student extends Person {
           }
         });
 
-        return Student._nextQuestion(questions, unsolvedIndices);
+        if (unsolvedIndices && unsolvedIndices.length > 0) {
+          const index = unsolvedIndices.shift();
+
+          const obj: any = {
+            next: nextQuestion,
+            print: printQuestion,
+            submit: makeSubmission,
+            _index: index,
+            _current: questions[index],
+            _indices: unsolvedIndices,
+            _questions: questions
+          };
+
+          const hidden = {
+            enumerable: false,
+            configurable: false
+          };
+
+          Object.defineProperty(obj, "_index", hidden);
+          Object.defineProperty(obj, "_current", hidden);
+          Object.defineProperty(obj, "_indices", hidden);
+          Object.defineProperty(obj, "_questions", {
+            ...hidden,
+            writable: false
+          });
+
+          return obj;
+        }
+
+        throw new Error("You've completed this quiz");
       } else {
-        console.log("No questions available in this quiz, check back later");
+        throw new Error("No questions available in this quiz");
       }
-    }
-  }
-
-  private static _nextQuestion(questions: Question[], indices: number[]) {
-    if (indices.length > 0) {
-      const index: number = <number>indices.shift();
-
-      const obj: any = {
-        index,
-        next: Student._nextQuestion(questions, indices),
-        current: questions[index],
-        print: printQuestion,
-        submit: makeSubmission
-      };
-
-      Object.defineProperty(obj, "current", {
-        enumerable: false,
-        writable: false,
-        configurable: false
-      });
-      Object.defineProperty(obj, "index", {
-        enumerable: false,
-        writable: false,
-        configurable: false
-      });
-      Object.defineProperty(obj, "next", {
-        enumerable: false,
-        writable: false,
-        configurable: false
-      });
-
-      return obj;
     } else {
-      return "You have completed the quiz";
+      throw new Error("Quiz does not exist");
     }
   }
 }
