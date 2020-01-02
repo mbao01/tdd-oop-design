@@ -1,26 +1,41 @@
-import { GradePoint } from "../interfaces";
+import { GradePoint, Question } from "../interfaces";
 
-function makeSubmission(submission: number[]) {
-  this.current.submission = submission;
-  this.print(submission);
-  return this.next;
+function nextQuestion() {
+  if (this._indices && this._indices.length > 0) {
+    const index: number = <number>this._indices.shift();
+    this._index = index;
+    this._current = this._questions[index];
+
+    return this;
+  }
+
+  this.next = null;
+  this.print = null;
+  this.submit = null;
+  return this;
 }
 
-function printQuestion(answers: number[]) {
-  let text = `Q${this.index + 1}. ${this.current.question}\n`;
-  this.current.choices.forEach((choice: string, index: number) => {
+function makeSubmission(submission: number[]) {
+  this._current.submission = submission;
+  this.print(submission);
+
+  // Move to next question after submission
+  this.next();
+}
+
+function printQuestion(answers?: number[]) {
+  let text = `Q${this._index + 1}. ${this._current.question}\n`;
+  this._current.choices.forEach((choice: string, index: number) => {
     text += `\t(${
       answers ? (answers.includes(index) ? index : "-") : index
     }) ${choice}\n`;
   });
 
-  console.log(text);
-
-  return this;
+  return text;
 }
 
 function calculateGradePoint(score: number, credit: number): GradePoint {
-  let grade = "X",
+  let grade = "---",
     gradePoint = 0;
 
   if (score < 40) {
@@ -69,4 +84,10 @@ function cgpaToDegree(cgpa: string | number) {
   return degree;
 }
 
-export { cgpaToDegree, printQuestion, makeSubmission, calculateGradePoint };
+export {
+  cgpaToDegree,
+  printQuestion,
+  nextQuestion,
+  makeSubmission,
+  calculateGradePoint
+};
