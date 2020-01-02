@@ -88,13 +88,11 @@ describe("Student", function() {
         "Q1. Tell me something\n\t(0) One\n\t(1) Two\n\t(2) Three\n\t(3) Four\n"
       );
       // moves to next question after submitting answer for current question
-      solve.submit([0, 3]);
+      let submission = solve.submit([0, 3]);
 
       // check that submission was made
-      expect(activeQuiz.questions[0]).toEqual({
-        ...quiz.questions[0],
-        submission: [0, 3]
-      });
+
+      expect(submission).toEqual([0, 3]);
 
       // check that next question was selected after submission
       expect(solve._index).toEqual(1);

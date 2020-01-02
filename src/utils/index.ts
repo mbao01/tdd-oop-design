@@ -21,6 +21,8 @@ function makeSubmission(submission: number[]) {
 
   // Move to next question after submission
   this.next();
+
+  return submission;
 }
 
 function printQuestion(answers?: number[]) {

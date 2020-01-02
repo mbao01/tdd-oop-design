@@ -39,7 +39,7 @@ export class Student extends Person {
   }
 
   addQuizzes(quizzes: Quiz[]) {
-    this._quizzes.push(...quizzes);
+    this._quizzes.push(...JSON.parse(JSON.stringify(quizzes)));
   }
 
   getQuiz(courseCode: string, quizId: string) {
