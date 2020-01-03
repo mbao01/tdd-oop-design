@@ -1,3 +1,5 @@
+#### NOTE: Gherkin feature files found in `~/features` directory
+
 #### I made some assumptions while creating this program;
 
 #### Assumptions
