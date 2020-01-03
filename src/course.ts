@@ -1,6 +1,12 @@
 import { Student } from "./student";
 import { Quiz } from "./interfaces";
 
+/**
+ * Course Class
+ *
+ * @export
+ * @class Course
+ */
 export class Course {
   private _code: string;
   private _title: string;
@@ -9,6 +15,14 @@ export class Course {
   private _solutions: Quiz[]; // includes answer property
   private _students: Student[];
 
+  /**
+   * Creates an instance of Course.
+   *
+   * @param {string} code
+   * @param {string} title
+   * @param {number} credit
+   * @memberof Course
+   */
   constructor(code: string, title: string, credit: number) {
     this._code = code;
     this._title = title;
@@ -18,27 +32,69 @@ export class Course {
     this._students = [];
   }
 
-  get code() {
+  /**
+   * get course code
+   *
+   * @readonly
+   * @type {string}
+   * @memberof Course
+   */
+  get code(): string {
     return this._code;
   }
 
-  get profile() {
+  /**
+   * get course profile
+   *
+   * @readonly
+   * @type {{ code: string; title: string; credit: number }}
+   * @memberof Course
+   */
+  get profile(): { code: string; title: string; credit: number } {
     return { code: this._code, title: this._title, credit: this._credit };
   }
 
-  get quizzes() {
+  /**
+   * get quizzes under course
+   *
+   * @readonly
+   * @type {Quiz[]}
+   * @memberof Course
+   */
+  get quizzes(): Quiz[] {
     return this._quizzes;
   }
 
-  get solutions() {
+  /**
+   * marking guide: get quizzes with solution to each question
+   *
+   * @readonly
+   * @type {Quiz[]}
+   * @memberof Course
+   */
+  get solutions(): Quiz[] {
     return this._solutions;
   }
 
-  get students() {
+  /**
+   * get all students taking this course
+   *
+   * @readonly
+   * @type {Student[]}
+   * @memberof Course
+   */
+  get students(): Student[] {
     return this._students;
   }
 
-  addQuiz(quiz: Quiz) {
+  /**
+   * add a new/unique quiz to the course and returns added quiz
+   *
+   * @param {Quiz} quiz
+   * @returns {Quiz}
+   * @memberof Course
+   */
+  addQuiz(quiz: Quiz): Quiz {
     const solution = {
       ...quiz,
       id: (this._quizzes.length + 1).toString(),
@@ -62,7 +118,14 @@ export class Course {
     return _quiz;
   }
 
-  registerStudent(student: Student) {
+  /**
+   * register or add a student to this course
+   *
+   * @param {Student} student
+   * @returns {string}
+   * @memberof Course
+   */
+  registerStudent(student: Student): string {
     const studentIndex = this._students.findIndex(
       ({ email }) => email == student.email
     );

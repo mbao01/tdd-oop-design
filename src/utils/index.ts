@@ -1,6 +1,11 @@
 import { GradePoint, Question } from "../interfaces";
 
-function nextQuestion() {
+/**
+ * set's current question and index to next unanswered question
+ *
+ * @returns {*}
+ */
+function nextQuestion(): any {
   if (this._indices && this._indices.length > 0) {
     const index: number = <number>this._indices.shift();
     this._index = index;
@@ -15,7 +20,13 @@ function nextQuestion() {
   return this;
 }
 
-function makeSubmission(submission: number[]) {
+/**
+ * set submission on current question
+ *
+ * @param {number[]} submission
+ * @returns {number[]}
+ */
+function makeSubmission(submission: number[]): number[] {
   this._current.submission = submission;
   this.print(submission);
 
@@ -25,7 +36,13 @@ function makeSubmission(submission: number[]) {
   return submission;
 }
 
-function printQuestion(answers?: number[]) {
+/**
+ * returns nicely readable current question and choices
+ *
+ * @param {number[]} [answers]
+ * @returns {string}
+ */
+function printQuestion(answers?: number[]): string {
   let text = `Q${this._index + 1}. ${this._current.question}\n`;
   this._current.choices.forEach((choice: string, index: number) => {
     text += `\t(${
@@ -36,6 +53,13 @@ function printQuestion(answers?: number[]) {
   return text;
 }
 
+/**
+ * calculates grade and grade points based on score and credit
+ *
+ * @param {number} score
+ * @param {number} credit
+ * @returns {GradePoint}
+ */
 function calculateGradePoint(score: number, credit: number): GradePoint {
   let grade = "---",
     gradePoint = 0;
@@ -66,7 +90,13 @@ function calculateGradePoint(score: number, credit: number): GradePoint {
   };
 }
 
-function cgpaToDegree(cgpa: string | number) {
+/**
+ * return degree corresponding to cgpa
+ *
+ * @param {(string | number)} cgpa
+ * @returns {string}
+ */
+function cgpaToDegree(cgpa: string | number): string {
   let degree = "---";
 
   if (cgpa < 1.0) {

@@ -4,12 +4,24 @@ import { printQuestion, makeSubmission, nextQuestion } from "./utils";
 import { Course } from "./course";
 
 /**
+ * Student Class
  *
+ * @export
+ * @class Student
+ * @extends {Person}
  */
 export class Student extends Person {
   protected _quizzes: Quiz[];
   protected _coursesCodes: string[];
 
+  /**
+   * Creates an instance of Student.
+   *
+   * @param {string} name
+   * @param {number} age
+   * @param {string} email
+   * @memberof Student
+   */
   constructor(name: string, age: number, email: string) {
     super(name, age, email);
 
@@ -17,15 +29,36 @@ export class Student extends Person {
     this._coursesCodes = [];
   }
 
-  get coursesCodes() {
+  /**
+   * get all codes of courses taken by student
+   *
+   * @readonly
+   * @type {string[]}
+   * @memberof Student
+   */
+  get coursesCodes(): string[] {
     return this._coursesCodes;
   }
 
-  get quizzes() {
+  /**
+   * return quizzes assigned to student
+   *
+   * @readonly
+   * @type {Quiz[]}
+   * @memberof Student
+   */
+  get quizzes(): Quiz[] {
     return this._quizzes;
   }
 
-  takeCourse(course: Course) {
+  /**
+   * adds course's code to student's list of courses
+   *
+   * @param {Course} course
+   * @returns {string}
+   * @memberof Student
+   */
+  takeCourse(course: Course): string {
     const courseIndex = this._coursesCodes.findIndex(
       code => code == course.code
     );
@@ -38,11 +71,25 @@ export class Student extends Person {
     }
   }
 
+  /**
+   * assign multiple quizzes to student
+   *
+   * @param {Quiz[]} quizzes
+   * @memberof Student
+   */
   addQuizzes(quizzes: Quiz[]) {
     this._quizzes.push(...JSON.parse(JSON.stringify(quizzes)));
   }
 
-  getQuiz(courseCode: string, quizId: string) {
+  /**
+   * get student quiz by quiz id and course code
+   *
+   * @param {string} courseCode
+   * @param {string} quizId
+   * @returns {Quiz}
+   * @memberof Student
+   */
+  getQuiz(courseCode: string, quizId: string): Quiz {
     const quiz = this._quizzes.find(
       ({ courseCode: _courseCode, id }) =>
         _courseCode == courseCode && id == quizId
@@ -51,7 +98,26 @@ export class Student extends Person {
     return quiz;
   }
 
-  solveQuiz(courseCode: string, quizId: string): { next: any } {
+  /**
+   * get quiz to solve by quiz by quiz id and course code
+   *
+   * @param {string} courseCode
+   * @param {string} quizId
+   * @returns {({
+   *     next: Function | null;
+   *     print: Function | null;
+   *     submit: Function | null;
+   *   })}
+   * @memberof Student
+   */
+  solveQuiz(
+    courseCode: string,
+    quizId: string
+  ): {
+    next: Function | null;
+    print: Function | null;
+    submit: Function | null;
+  } {
     const quiz = this._quizzes.find(
       ({ courseCode: _courseCode, id }) =>
         _courseCode == courseCode && id == quizId

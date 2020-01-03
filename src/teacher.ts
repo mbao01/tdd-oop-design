@@ -1,15 +1,28 @@
 import { Person } from "./person";
 import { Course } from "./course";
 import { Student } from "./student";
-import { Quiz } from "./interfaces";
+import { Quiz, Report } from "./interfaces";
 import { cgpaToDegree, calculateGradePoint } from "./utils";
 
 /**
+ * Teacher Class
  *
+ * @export
+ * @class Teacher
+ * @extends {Person}
  */
 export class Teacher extends Person {
   private _courses: Course[];
 
+  /**
+   * Creates an instance of Teacher.
+   *
+   * @param {string} name
+   * @param {number} age
+   * @param {string} email
+   * @param {Course[]} [courses=[]]
+   * @memberof Teacher
+   */
   constructor(
     name: string,
     age: number,
@@ -21,12 +34,25 @@ export class Teacher extends Person {
     this._courses = courses;
   }
 
-  get courses() {
+  /**
+   * get courses taken by teacher
+   *
+   * @readonly
+   * @type {Course[]}
+   * @memberof Teacher
+   */
+  get courses(): Course[] {
     return this._courses;
   }
 
-  // Add a course for a teacher to teach
-  teachCourse(course: Course) {
+  /**
+   * add a course for a teacher to teach
+   *
+   * @param {Course} course
+   * @returns {string}
+   * @memberof Teacher
+   */
+  teachCourse(course: Course): string {
     const courseIndex = this._courses.findIndex(
       ({ code }) => code == course.code
     );
@@ -39,8 +65,16 @@ export class Teacher extends Person {
     }
   }
 
-  // I assume that student's are not in ALL classes that a teacher teaches
-  addStudentToCourse(courseCode: string, student: Student) {
+  /**
+   * add student to course taken by this teacher
+   *
+   * I assume that student's are not in ALL classes that a teacher teaches
+   * @param {string} courseCode
+   * @param {Student} student
+   * @returns {string}
+   * @memberof Teacher
+   */
+  addStudentToCourse(courseCode: string, student: Student): string {
     const course = this._courses.find(({ code }) => code == courseCode);
 
     if (course) {
@@ -51,7 +85,15 @@ export class Teacher extends Person {
     }
   }
 
-  addQuizToCourse(courseCode: string, quiz: Quiz) {
+  /**
+   * add quiz to course taken by this teacher
+   *
+   * @param {string} courseCode
+   * @param {Quiz} quiz
+   * @returns {string}
+   * @memberof Teacher
+   */
+  addQuizToCourse(courseCode: string, quiz: Quiz): string {
     const course = this._courses.find(({ code }) => code == courseCode);
 
     if (course) {
@@ -62,11 +104,20 @@ export class Teacher extends Person {
     }
   }
 
+  /**
+   * assign quizzes from course taken by teacher to student taking a course
+   *
+   * @param {string} studentEmail
+   * @param {string} courseCode
+   * @param {string[]} [quizIds]
+   * @returns {string}
+   * @memberof Teacher
+   */
   assignQuizzesToStudent(
     studentEmail: string,
     courseCode: string,
     quizIds?: string[]
-  ) {
+  ): string {
     const course = this._courses.find(({ code }) => code == courseCode);
 
     if (course) {
@@ -91,7 +142,6 @@ export class Teacher extends Person {
         }, []);
 
       if (student) {
-        console.log(filteredQuizzes);
         student.addQuizzes(filteredQuizzes);
         return "Quizzes added to student";
       } else {
@@ -102,43 +152,28 @@ export class Teacher extends Person {
     }
   }
 
-  gradeStudentsForAllCourses() {
-    let students: {
-      age: number;
-      name: string;
-      email: string;
-      courses: {
-        code: string;
-        title: string;
-        score?: number; // expressed in percentage
-        credit: number;
-        grade?: string;
-        point?: number;
-        quizzes: {
-          id: string;
-          title: string;
-          score: number; // expressed in percentage
-        }[];
-      }[];
-      totalCredits?: number;
-      totalPoints?: number;
-      cgpa?: string | number;
-      degree?: string;
-    }[] = [];
+  /**
+   * grade students for the semester for courses taken by teacher
+   *
+   * @returns {Report[]}
+   * @memberof Teacher
+   */
+  gradeStudentsForAllCourses(): Report[] {
+    let studentsReports: Report[] = [];
 
     this._courses.forEach((_course: Course) => {
       _course.students.forEach(_student => {
-        let studentIndex = students.findIndex(
+        let reportIndex = studentsReports.findIndex(
           ({ email }) => email == _student.email
         );
 
-        if (studentIndex < 0) {
-          students.push({
+        if (reportIndex < 0) {
+          studentsReports.push({
             ..._student.profile,
             courses: []
           });
 
-          studentIndex = students.length - 1;
+          reportIndex = studentsReports.length - 1;
         }
 
         _student.quizzes.forEach(quiz => {
@@ -164,7 +199,7 @@ export class Teacher extends Person {
             0
           );
 
-          const course = students[studentIndex].courses.find(
+          const course = studentsReports[reportIndex].courses.find(
             ({ code }) => code == _course.code
           );
 
@@ -175,7 +210,7 @@ export class Teacher extends Person {
               score: (100 * score) / quiz.questions.length // Assuming every quiz must have atleast one question
             });
           } else {
-            students[studentIndex].courses.push({
+            studentsReports[reportIndex].courses.push({
               ..._course.profile,
               quizzes: [
                 {
@@ -190,10 +225,10 @@ export class Teacher extends Person {
       });
     });
 
-    students.forEach(student => {
+    studentsReports.forEach(studentReport => {
       let totalCredits = 0,
         totalPoints = 0;
-      student.courses.forEach(course => {
+      studentReport.courses.forEach(course => {
         let quizzesScore = course.quizzes.reduce((acc, quiz) => {
           acc = acc + quiz.score;
 
@@ -214,12 +249,12 @@ export class Teacher extends Person {
         totalPoints += course.point;
       });
 
-      student.totalCredits = totalCredits;
-      student.totalPoints = totalPoints;
-      student.cgpa = (totalPoints / totalCredits).toFixed(2);
-      student.degree = cgpaToDegree(student.cgpa);
+      studentReport.totalCredits = totalCredits;
+      studentReport.totalPoints = totalPoints;
+      studentReport.cgpa = (totalPoints / totalCredits).toFixed(2);
+      studentReport.degree = cgpaToDegree(studentReport.cgpa);
     });
 
-    return students;
+    return studentsReports;
   }
 }

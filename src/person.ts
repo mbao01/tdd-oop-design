@@ -15,14 +15,32 @@ export class Person {
     this._email = email;
   }
 
+  /**
+   * returns person's email address
+   *
+   * @readonly
+   * @memberof Person
+   */
   get email() {
     return this._email;
   }
 
+  /**
+   * returns person's name
+   *
+   * @readonly
+   * @memberof Person
+   */
   get name() {
     return this._name;
   }
 
+  /**
+   * returns person's profile
+   *
+   * @readonly
+   * @memberof Person
+   */
   get profile() {
     return {
       name: this._name,
