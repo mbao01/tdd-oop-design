@@ -2,6 +2,7 @@ import sinon from "sinon";
 import { School } from "../src/school";
 import { Student } from "../src/student";
 import { Teacher } from "../src/teacher";
+import { Course } from "../src/course";
 
 describe("School", function() {
   let school;
@@ -19,6 +20,49 @@ describe("School", function() {
 
   it("should return school's profile", function() {
     expect(school.profile).toEqual(schoolMock);
+  });
+
+  describe("#Course", function() {
+    let courseStub;
+
+    beforeEach(function() {
+      courseStub = sinon.stub(
+        new Course("MDB-101", "Introduction to Mongo DB", 3)
+      );
+    });
+
+    it("should add course to school", function() {
+      expect(school.addCourse(courseStub)).toEqual(
+        "Course added to this school"
+      );
+    });
+
+    it("should throw an exception if course to be added already exist in school", function() {
+      expect(function() {
+        school.addCourse(courseStub);
+        school.addCourse(courseStub);
+      }).toThrowError("Course already exist in school");
+    });
+
+    it("should get course in school", function() {
+      school.addCourse(courseStub);
+
+      expect(school.getCourse("MDB-101")).toEqual(courseStub);
+    });
+
+    it("should remove course from school", function() {
+      school.addCourse(courseStub);
+
+      expect(school.removeCourse("MDB-101")).toEqual(
+        "Course removed from school"
+      );
+    });
+
+    it("should throw an exception if teacher to me removed does not exist in school", function() {
+      expect(function() {
+        school.removeCourse("MTH-332");
+      }).toThrowError("Course does not exist in this school");
+    });
   });
 
   describe("#Teacher", function() {
@@ -61,7 +105,7 @@ describe("School", function() {
 
     it("should throw an exception if teacher to me removed does not exist in school", function() {
       expect(function() {
-        school.removeTeacher("email");
+        school.removeTeacher("tracey@email.com");
       }).toThrowError("Teacher does not teach in this school");
     });
   });

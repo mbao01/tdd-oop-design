@@ -1,5 +1,6 @@
 import { Teacher } from "./teacher";
 import { Student } from "./student";
+import { Course } from "./course";
 
 /**
  * School Class
@@ -12,6 +13,7 @@ import { Student } from "./student";
 export class School {
   private _teachers: Teacher[];
   private _students: Student[];
+  private _courses: Course[];
   private _name: string;
 
   /**
@@ -24,6 +26,7 @@ export class School {
     this._name = name;
     this._teachers = [];
     this._students = [];
+    this._courses = [];
   }
 
   /**
@@ -37,6 +40,54 @@ export class School {
     return {
       name: this._name
     };
+  }
+
+  /**
+   * add new course to school
+   *
+   * @param {Course} course
+   * @returns {string}
+   * @memberof School
+   */
+  addCourse(course: Course): string {
+    // We don't want to add the same course here. Clones not allowed.
+    const index = this._courses.findIndex(({ code }) => code == course.code);
+
+    if (index < 0) {
+      this._courses.push(course);
+      return "Course added to this school";
+    } else {
+      throw new Error("Course already exist in school");
+    }
+  }
+
+  /**
+   * get course in school by course code
+   *
+   * @param {string} courseCode
+   * @returns {Course}
+   * @memberof School
+   */
+  getCourse(courseCode: string): Course {
+    return this._courses.find(({ code }) => code == courseCode);
+  }
+
+  /**
+   * remove course from this school
+   *
+   * @param {string} courseCode
+   * @returns {string}
+   * @memberof School
+   */
+  removeCourse(courseCode: string): string {
+    const index = this._courses.findIndex(({ code }) => code == courseCode);
+
+    if (index > -1) {
+      this._courses.splice(index, 1);
+      return "Course removed from school";
+    } else {
+      throw new Error("Course does not exist in this school");
+    }
   }
 
   /**
@@ -63,11 +114,11 @@ export class School {
   /**
    * get teacher in school by email
    *
-   * @param {*} teacherEmail
+   * @param {string} teacherEmail
    * @returns {Teacher}
    * @memberof School
    */
-  getTeacherByEmail(teacherEmail): Teacher {
+  getTeacherByEmail(teacherEmail: string): Teacher {
     return this._teachers.find(({ email }) => email == teacherEmail);
   }
 
@@ -115,11 +166,11 @@ export class School {
   /**
    * get student in school by email
    *
-   * @param {*} studentEmail
+   * @param {string} studentEmail
    * @returns {Student}
    * @memberof School
    */
-  getStudentByEmail(studentEmail): Student {
+  getStudentByEmail(studentEmail: string): Student {
     return this._students.find(({ email }) => email == studentEmail);
   }
 
