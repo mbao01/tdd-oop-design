@@ -24,6 +24,7 @@
 
 #### Example
 
+
 ```TypeScript
 
 // Create school
